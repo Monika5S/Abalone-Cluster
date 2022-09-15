@@ -1,0 +1,73 @@
+---
+  title:  "R Notebook"
+  Author: "Monika Singh"
+---
+In this project hierarchical clustering technique is applied on Abalone dataset.
+
+
+Accessing Dataset
+```{r}
+df<-read.csv("abalone.csv") #accessing dataset from csv file
+head(df,10)#printing top 10 data points
+```
+
+Data Cleaning and converting categorical value of ‘Sex’ feature to numeric value
+```{r}
+df<-na.omit(df) #droping NA values if any in dataset
+nrow(df)
+
+df$Sex[df$Sex=="M"]<-0 # male=0
+df$Sex[df$Sex=="F"]<-1 # female=1
+df$Sex[df$Sex=="I"]<-2 # Infant=2
+df$Sex<-as.integer(df$Sex)
+head(df,10)
+```
+
+
+Data Scaling
+```{r}
+scaled_df<-scale(df) #scaling
+scaled_df<-data.frame(scaled_df) #Converting dataset from array to dataframe
+```
+
+
+finding Euclidean distance
+```{r}
+d<-dist(scaled_df,method="euclidean") #Calcualting distance between points
+```
+
+
+Generating dendrogram
+```{r}
+cl<-hclust(d,method="ward.D") #creating cluster using ward’s method
+plot(cl,cex=0.6,hang=-1) #ploting dendrogram
+
+```
+
+
+Creating Splitting boundary for 3 clusters 
+```{r}
+plot(cl,cex=0.6,hang=-1) #ploting dendrogram
+rect.hclust(cl,k=3,border='red') #create rectangular boundary for cluster on dendrogram
+```
+
+fetching data for 3 cluster
+```{r}
+clusters<- cutree(cl,3) #fetching 3 clusters
+table(clusters) #number of data points after division into clusters
+```
+
+
+Plotting clusters
+```{r}
+plot(df$Sex ,col=clusters) #plotting division of Sex feature into clusters
+```
+
+```{r}
+plot(df$Rings ,col=clusters)  #plotting division of Rings feature into clusters
+```
+
+```{r}
+plot(df$Length ,col=clusters) #plotting division of Length feature data points in clusters
+```
+
